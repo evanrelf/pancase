@@ -1,7 +1,7 @@
 use clap::Parser as _;
 use heck::{ToKebabCase as _, ToLowerCamelCase as _, ToPascalCase as _, ToSnakeCase as _};
 use regex::{Captures, Regex};
-use std::io;
+use std::io::{self, Write as _};
 
 #[derive(Clone, clap::ValueEnum)]
 enum Case {
@@ -28,11 +28,11 @@ fn main() -> anyhow::Result<()> {
         Case::Pascal => |s: &str| s.to_pascal_case(),
     };
 
-    for line in io::stdin().lines() {
-        let input = line?;
-        let output = regex.replace_all(&input, |captures: &Captures| case(&captures[0]));
-        println!("{}", output);
-    }
+    let input = io::read_to_string(io::stdin())?;
+
+    let output = regex.replace_all(&input, |captures: &Captures| case(&captures[0]));
+
+    _ = write!(io::stdout(), "{output}");
 
     Ok(())
 }
