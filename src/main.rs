@@ -25,11 +25,11 @@ fn main() -> anyhow::Result<()> {
 
     let regex = Regex::new(r"[a-zA-Z_][a-zA-Z0-9_-]*")?;
 
-    let case = match args.case {
-        Case::Snake => |s: &str| s.to_snake_case(),
-        Case::Kebab => |s: &str| s.to_kebab_case(),
-        Case::Camel => |s: &str| s.to_lower_camel_case(),
-        Case::Pascal => |s: &str| s.to_pascal_case(),
+    let case = |s: &str| match args.case {
+        Case::Snake => s.to_snake_case(),
+        Case::Kebab => s.to_kebab_case(),
+        Case::Camel => s.to_lower_camel_case(),
+        Case::Pascal => s.to_pascal_case(),
     };
 
     let input = io::read_to_string(io::stdin())?;
