@@ -1,5 +1,6 @@
 use clap::Parser as _;
 use heck::{ToKebabCase as _, ToLowerCamelCase as _, ToPascalCase as _, ToSnakeCase as _};
+use regex::{Captures, Regex};
 use std::io;
 
 #[derive(Clone, clap::ValueEnum)]
@@ -15,15 +16,23 @@ struct Args {
     case: Case,
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let args = Args::parse();
+
+    let regex = Regex::new(r"[a-zA-Z_][a-zA-Z0-9_-]*")?;
+
     let case = match args.case {
         Case::Snake => |s: &str| s.to_snake_case(),
         Case::Kebab => |s: &str| s.to_kebab_case(),
         Case::Camel => |s: &str| s.to_lower_camel_case(),
         Case::Pascal => |s: &str| s.to_pascal_case(),
     };
+
     for line in io::stdin().lines() {
-        println!("{}", case(&line.unwrap()));
+        let input = line?;
+        let output = regex.replace_all(&input, |captures: &Captures| case(&captures[0]));
+        println!("{}", output);
     }
+
+    Ok(())
 }
