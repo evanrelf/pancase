@@ -23,7 +23,7 @@ struct Args {
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
-    let regex = Regex::new(r"[a-zA-Z_][a-zA-Z0-9_-]*")?;
+    let regex = Regex::new(r"\b_*[a-zA-Z0-9]+(?:[-]?[a-zA-Z0-9_]+)*\b")?;
 
     let case = |s: &str| match args.case {
         Case::Snake => s.to_snake_case(),
