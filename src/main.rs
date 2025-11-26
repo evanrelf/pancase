@@ -5,10 +5,14 @@ use std::io::{self, Write as _};
 
 #[derive(Clone, clap::ValueEnum)]
 enum Case {
-    Snake,  // snake_case
-    Kebab,  // kebab-case
-    Camel,  // camelCase
-    Pascal, // PascalCase
+    /// snake_case
+    Snake,
+    /// kebab-case
+    Kebab,
+    /// camelCase
+    Camel,
+    /// PascalCase
+    Pascal,
 }
 
 #[derive(clap::Parser)]
