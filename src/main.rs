@@ -62,7 +62,7 @@ fn spongebob(text: &str) -> String {
         } else {
             string.extend(char.to_lowercase());
         }
-        upper = !upper;
+        upper = fastrand::bool();
     }
     string
 }
