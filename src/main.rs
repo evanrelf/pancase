@@ -53,18 +53,16 @@ fn main() -> anyhow::Result<()> {
 
 fn spongebob(text: &str) -> String {
     let mut string = String::with_capacity(text.len());
-    let mut upper = false;
     for char in text.chars() {
         if !char.is_alphabetic() {
             string.push(char);
             continue;
         }
-        if upper {
+        if fastrand::bool() {
             string.extend(char.to_uppercase());
         } else {
             string.extend(char.to_lowercase());
         }
-        upper = fastrand::bool();
     }
     string
 }
