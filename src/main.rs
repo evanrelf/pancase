@@ -3,6 +3,7 @@ use heck::{ToKebabCase as _, ToLowerCamelCase as _, ToPascalCase as _, ToSnakeCa
 use regex::bytes::{Captures, Regex};
 use std::io::{self, Read as _, Write as _};
 
+#[expect(clippy::doc_markdown)]
 #[derive(Clone, clap::ValueEnum)]
 enum Case {
     /// snake_case
@@ -13,6 +14,8 @@ enum Case {
     Camel,
     /// PascalCase
     Pascal,
+    /// sPoNgEbOb
+    Spongebob,
 }
 
 #[derive(clap::Parser)]
@@ -30,6 +33,7 @@ fn main() -> anyhow::Result<()> {
         Case::Kebab => s.to_kebab_case(),
         Case::Camel => s.to_lower_camel_case(),
         Case::Pascal => s.to_pascal_case(),
+        Case::Spongebob => spongebob(s),
     };
 
     let mut input = Vec::new();
@@ -43,4 +47,21 @@ fn main() -> anyhow::Result<()> {
     let _ = io::stdout().write_all(&output);
 
     Ok(())
+}
+
+fn spongebob(text: &str) -> String {
+    text.chars()
+        .enumerate()
+        .map(|(i, c)| {
+            if c.is_alphabetic() {
+                if i.is_multiple_of(2) {
+                    c.to_lowercase().to_string()
+                } else {
+                    c.to_uppercase().to_string()
+                }
+            } else {
+                c.to_string()
+            }
+        })
+        .collect()
 }
