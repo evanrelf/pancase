@@ -50,18 +50,19 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn spongebob(text: &str) -> String {
-    text.chars()
-        .enumerate()
-        .map(|(i, c)| {
-            if c.is_alphabetic() {
-                if i.is_multiple_of(2) {
-                    c.to_lowercase().to_string()
-                } else {
-                    c.to_uppercase().to_string()
-                }
-            } else {
-                c.to_string()
-            }
-        })
-        .collect()
+    let mut string = String::with_capacity(text.len());
+    let mut upper = false;
+    for char in text.chars() {
+        if !char.is_alphabetic() {
+            string.push(char);
+            continue;
+        }
+        if upper {
+            string.extend(char.to_uppercase());
+        } else {
+            string.extend(char.to_lowercase());
+        }
+        upper = !upper;
+    }
+    string
 }
