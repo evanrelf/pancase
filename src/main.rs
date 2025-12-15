@@ -28,6 +28,8 @@ fn main() -> anyhow::Result<()> {
 
     let regex = Regex::new(r"\b_*[a-zA-Z0-9]+(?:[-]?[a-zA-Z0-9_]+)*\b")?;
 
+    fastrand::seed(0);
+
     let case = |s: &str| match args.case {
         Case::Snake => s.to_snake_case(),
         Case::Kebab => s.to_kebab_case(),
