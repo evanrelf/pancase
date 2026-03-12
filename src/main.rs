@@ -30,12 +30,12 @@ fn main() -> anyhow::Result<()> {
 
     fastrand::seed(0);
 
-    let case = |s: &str| match args.case {
-        Case::Snake => s.to_snake_case(),
-        Case::Kebab => s.to_kebab_case(),
-        Case::Camel => s.to_lower_camel_case(),
-        Case::Pascal => s.to_pascal_case(),
-        Case::Spongebob => spongebob(s),
+    let case = match args.case {
+        Case::Snake => |s: &str| s.to_snake_case(),
+        Case::Kebab => |s: &str| s.to_kebab_case(),
+        Case::Camel => |s: &str| s.to_lower_camel_case(),
+        Case::Pascal => |s: &str| s.to_pascal_case(),
+        Case::Spongebob => |s: &str| spongebob(s),
     };
 
     let mut input = Vec::new();
