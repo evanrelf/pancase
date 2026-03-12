@@ -1,7 +1,7 @@
 use clap::Parser as _;
 use heck::{ToKebabCase as _, ToLowerCamelCase as _, ToPascalCase as _, ToSnakeCase as _};
 use regex::bytes::{Captures, Regex};
-use std::io::{self, Read as _, Write as _};
+use std::io::{self, BufRead as _, Write as _};
 
 #[expect(clippy::doc_markdown)]
 #[derive(Clone, clap::ValueEnum)]
@@ -24,6 +24,8 @@ struct Args {
 }
 
 fn main() -> anyhow::Result<()> {
+    sigpipe::reset();
+
     let args = Args::parse();
 
     let regex = Regex::new(r"\b_*[a-zA-Z0-9]+(?:[-]?[a-zA-Z0-9_]+)*\b")?;
@@ -38,15 +40,24 @@ fn main() -> anyhow::Result<()> {
         Case::Spongebob => |s: &str| spongebob(s),
     };
 
+    let mut stdin = io::stdin().lock();
+    let mut stdout = io::stdout().lock();
     let mut input = Vec::new();
 
-    io::stdin().read_to_end(&mut input)?;
+    loop {
+        input.clear();
 
-    let output = regex.replace_all(&input, |captures: &Captures| {
-        case(str::from_utf8(&captures[0]).unwrap())
-    });
+        if stdin.read_until(b'\n', &mut input)? == 0 {
+            break;
+        }
 
-    let _ = io::stdout().write_all(&output);
+        let output = regex.replace_all(&input, |captures: &Captures| {
+            case(str::from_utf8(&captures[0]).unwrap())
+        });
+
+        stdout.write_all(&output)?;
+        stdout.flush()?;
+    }
 
     Ok(())
 }
